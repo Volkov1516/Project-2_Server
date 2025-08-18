@@ -1,12 +1,13 @@
 type Project = {
   id: string;
+  ownerId: string;
   name: string;
 };
 
 const projects: Project[] = [];
 
 export const createProjectModel = async (data: Partial<Project>): Promise<Project> => {
-  const project = { id: Date.now().toString(), name: data.name || 'Untitled Project' };
+  const project = { id: Date.now().toString(),  ownerId: '...', name: data.name || 'Untitled Project' };
   projects.push(project);
   return project;
 };

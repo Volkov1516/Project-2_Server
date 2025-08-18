@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import projectRoutes from './routes/project.routes';
 import { errorHandler } from './middleware/errorHandler';
 
