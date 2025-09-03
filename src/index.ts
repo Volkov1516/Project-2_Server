@@ -3,6 +3,7 @@ import express from 'express';
 import projectRoutes from './routes/project.routes';
 import componentRoutes from './routes/component.routes'
 import cardRoutes from './routes/card.routes';
+import columnRoutes from './routes/column.routes';
 import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use('/projects', projectRoutes);
 app.use('/components', componentRoutes);
 app.use('/cards', cardRoutes);
+app.use('/columns', columnRoutes);
 
 app.use(errorHandler);
 
