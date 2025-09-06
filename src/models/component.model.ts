@@ -2,6 +2,7 @@ type Component = {
   id: string;
   projectId: string;
   parentId?: string;
+  telegramKey?: string;
   name: string;
 };
 

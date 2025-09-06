@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { registerTelegramWebhook } from '../services/telegramService';
+
 import { createComponentModel, readComponentModel, updateComponentModel, deleteComponentModel } from '../models/component.model';
 
 export const createComponentController = async (req: Request, res: Response, next: NextFunction) => {
@@ -24,11 +26,19 @@ export const readComponentController = async (req: Request, res: Response, next:
 
 export const updateComponentController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const component = await updateComponentModel(req.params.id, req.body);
-    if (!component) {
+    const existingComponent = await readComponentModel(req.params.id);
+    
+    if (!existingComponent) {
       return res.status(404).json({ message: 'Component not found' });
     }
-    res.json(component);
+
+    if (req.body.telegramKey && req.body.telegramKey !== existingComponent.telegramKey) {
+      await registerTelegramWebhook(req.body.telegramKey, req.params.id);
+    }
+
+    const updateComponent = await updateComponentModel(req.params.id, req.body);
+
+    res.json(updateComponent);
   } catch (error) {
     next(error);
   }
