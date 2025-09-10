@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 type Component = {
   id: string;
   projectId: string;
@@ -11,15 +13,20 @@ const components: Component[] = [];
 export const createComponentModel = async (
   data: Partial<Component>,
 ): Promise<Component> => {
-  if (!data.projectId) {
+  const { projectId, parentId, name = "untitled", telegramKey } = data;
+
+  if (!projectId) {
     throw new Error("Project ID is required to create a component");
   }
 
   const component = {
-    id: Date.now().toString(),
-    projectId: data.projectId,
-    name: data.name || "Untitled Component",
+    id: uuidv4(),
+    projectId,
+    ...(parentId && { parentId }),
+    name: name || "untitled",
+    ...(telegramKey && { telegramKey }),
   };
+
   components.push(component);
   return component;
 };
@@ -35,12 +42,13 @@ export const updateComponentModel = async (
   data: Partial<Component>,
 ): Promise<Component | undefined> => {
   const component = components.find((c) => c.id === id);
-  if (component && data.name) component.name = data.name;
-  if (component && data.telegramKey) component.telegramKey = data.telegramKey;
+  if (component) Object.assign(component, data); // Allows partial updates
   return component;
 };
 
-export const deleteComponentModel = async (id: string): Promise<void> => {
+export const deleteComponentModel = async (id: string): Promise<boolean> => {
   const index = components.findIndex((c) => c.id === id);
-  if (index !== -1) components.splice(index, 1);
+  if (index === -1) return false;
+  components.splice(index, 1);
+  return true;
 };

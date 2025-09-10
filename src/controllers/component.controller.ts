@@ -1,75 +1,59 @@
 import { Request, Response, NextFunction } from "express";
-import { registerTelegramWebhook } from "../services/telegramService";
-
 import {
   createComponentModel,
   readComponentModel,
   updateComponentModel,
   deleteComponentModel,
 } from "../models/component.model";
+import { asyncHandler } from "../utils/asyncHandler";
+import { registerTelegramWebhook } from "../services/telegramService";
 
-export const createComponentController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const createComponentController = asyncHandler(
+  async (req: Request, res: Response) => {
     const component = await createComponentModel(req.body);
     res.status(201).json(component);
-  } catch (error) {
-    next(error);
-  }
-};
+  },
+);
 
-export const readComponentController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const readComponentController = asyncHandler(
+  async (req: Request, res: Response) => {
     const component = await readComponentModel(req.params.id);
     if (!component) {
       return res.status(404).json({ message: "Component not found" });
     }
     res.json(component);
-  } catch (error) {
-    next(error);
-  }
-};
+  },
+);
 
-export const updateComponentController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    // const existingComponent = await readComponentModel(req.params.id);
+export const updateComponentController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const existingComponent = await readComponentModel(req.params.id);
 
-    // if (!existingComponent) {
-    //   return res.status(404).json({ message: 'Component not found' });
-    // }
+    if (!existingComponent) {
+      return res.status(404).json({ message: "Component not found" });
+    }
 
-    // if (req.body.telegramKey && req.body.telegramKey !== existingComponent.telegramKey) {
-    //   await registerTelegramWebhook(req.body.telegramKey, req.params.id);
-    // }
+    if (
+      req.body.telegramKey &&
+      req.body.telegramKey !== existingComponent.telegramKey
+    ) {
+      await registerTelegramWebhook(req.body.telegramKey, req.params.id);
+    }
 
-    const updateComponent = await updateComponentModel(req.params.id, req.body);
+    const updatedComponent = await updateComponentModel(
+      req.params.id,
+      req.body,
+    );
+    res.json(updatedComponent);
+  },
+);
 
-    res.json(updateComponent);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const deleteComponentController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    await deleteComponentModel(req.params.id);
+export const deleteComponentController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const deleted = await deleteComponentModel(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Component not found" });
+    }
     res.status(204).send();
-  } catch (error) {
-    next(error);
-  }
-};
+  },
+);
