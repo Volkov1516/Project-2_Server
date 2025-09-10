@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 type Project = {
   id: string;
   ownerId: string;
@@ -10,9 +12,9 @@ export const createProjectModel = async (
   data: Partial<Project>,
 ): Promise<Project> => {
   const project = {
-    id: Date.now().toString(),
-    ownerId: "...",
-    name: data.name || "Untitled Project",
+    id: uuidv4(),
+    ownerId: data.ownerId || "unknown",
+    name: data.name || "untitled",
   };
   projects.push(project);
   return project;
@@ -29,11 +31,13 @@ export const updateProjectModel = async (
   data: Partial<Project>,
 ): Promise<Project | undefined> => {
   const project = projects.find((p) => p.id === id);
-  if (project && data.name) project.name = data.name;
+  if (project) Object.assign(project, data); // Allows partial updates
   return project;
 };
 
-export const deleteProjectModel = async (id: string): Promise<void> => {
+export const deleteProjectModel = async (id: string): Promise<boolean> => {
   const index = projects.findIndex((p) => p.id === id);
-  if (index !== -1) projects.splice(index, 1);
+  if (index === -1) return false;
+  projects.splice(index, 1);
+  return true;
 };
