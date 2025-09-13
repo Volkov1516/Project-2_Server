@@ -1,13 +1,17 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import morgan from "morgan";
 
 import projectRoutes from "./routes/project.routes";
 import componentRoutes from "./routes/component.routes";
 import cardRoutes from "./routes/card.routes";
 import columnRoutes from "./routes/column.routes";
+import telegramRoutes from "./routes/telegram.routes";
 import { notFound } from "./middleware/notFound";
 import { errorHandler } from "./middleware/errorHandler";
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,6 +24,7 @@ app.use("/projects", projectRoutes);
 app.use("/components", componentRoutes);
 app.use("/cards", cardRoutes);
 app.use("/columns", columnRoutes);
+app.use("/telegram", telegramRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
