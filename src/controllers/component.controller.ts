@@ -6,7 +6,7 @@ import {
   deleteComponentModel,
 } from "../models/component.model";
 import { asyncHandler } from "../utils/asyncHandler";
-import { registerTelegramWebhook } from "../services/telegramService";
+import { registerTelegramWebhook } from "../services/telegram.service";
 
 export const createComponentController = asyncHandler(
   async (req: Request, res: Response) => {
