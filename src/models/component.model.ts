@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import pool from "../db";
 
 type Component = {
   id: string;
@@ -8,47 +8,64 @@ type Component = {
   name: string;
 };
 
-const components: Component[] = [];
-
 export const createComponentModel = async (
   data: Partial<Component>,
 ): Promise<Component> => {
-  const { projectId, parentId, name = "untitled", telegramKey } = data;
+  const {
+    projectId,
+    parentId = null,
+    name = "untitled",
+    telegramKey = null,
+  } = data;
 
   if (!projectId) {
     throw new Error("Project ID is required to create a component");
   }
 
-  const component = {
-    id: uuidv4(),
-    projectId,
-    ...(parentId && { parentId }),
-    name: name || "untitled",
-    ...(telegramKey && { telegramKey }),
-  };
+  const result = await pool.query(
+    `
+    INSERT INTO components (projectId, parentId, name, telegramKey)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+    `,
+    [projectId, parentId, name, telegramKey],
+  );
 
-  components.push(component);
-  return component;
+  return result.rows[0];
 };
 
 export const readComponentModel = async (
   id: string,
 ): Promise<Component | undefined> => {
-  return components.find((c) => c.id === id);
+  const result = await pool.query(`SELECT * FROM components WHERE id = $1`, [
+    id,
+  ]);
+  return result.rows[0];
 };
 
 export const updateComponentModel = async (
   id: string,
   data: Partial<Component>,
 ): Promise<Component | undefined> => {
-  const component = components.find((c) => c.id === id);
-  if (component) Object.assign(component, data); // Allows partial updates
-  return component;
+  const { parentId, name, telegramKey } = data;
+
+  const result = await pool.query(
+    `
+    UPDATE components
+    SET
+      parentId = COALESCE($1, parentId),
+      name = COALESCE($2, name),
+      telegramKey = COALESCE($3, telegramKey)
+    WHERE id = $4
+    RETURNING *
+    `,
+    [parentId ?? null, name ?? null, telegramKey ?? null, id],
+  );
+
+  return result.rows[0];
 };
 
 export const deleteComponentModel = async (id: string): Promise<boolean> => {
-  const index = components.findIndex((c) => c.id === id);
-  if (index === -1) return false;
-  components.splice(index, 1);
-  return true;
+  const result = await pool.query(`DELETE FROM components WHERE id = $1`, [id]);
+  return (result.rowCount ?? 0) > 0;
 };

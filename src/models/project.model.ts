@@ -1,43 +1,42 @@
-import { v4 as uuidv4 } from "uuid";
+import pool from "../db";
 
 type Project = {
   id: string;
-  ownerId: string;
+  ownerId: string; // String to match user ID type from Firebase Auth
   name: string;
 };
-
-const projects: Project[] = [];
 
 export const createProjectModel = async (
   data: Partial<Project>,
 ): Promise<Project> => {
-  const project = {
-    id: uuidv4(),
-    ownerId: data.ownerId || "unknown",
-    name: data.name || "untitled",
-  };
-  projects.push(project);
-  return project;
+  console.log("DB_NAME =", process.env.DB_NAME);
+
+  const result = await pool.query(
+    "INSERT INTO projects (ownerId, name) VALUES ($1, $2) RETURNING *",
+    [data.ownerId, data.name],
+  );
+  return result.rows[0];
 };
 
 export const readProjectModel = async (
   id: string,
 ): Promise<Project | undefined> => {
-  return projects.find((p) => p.id === id);
+  const result = await pool.query("SELECT * FROM projects WHERE id=$1", [id]);
+  return result.rows[0];
 };
 
 export const updateProjectModel = async (
   id: string,
   data: Partial<Project>,
 ): Promise<Project | undefined> => {
-  const project = projects.find((p) => p.id === id);
-  if (project) Object.assign(project, data); // Allows partial updates
-  return project;
+  const result = await pool.query(
+    "UPDATE projects SET ownerId = COALESCE($1, ownerId), name = COALESCE($2, name) WHERE id=$3 RETURNING *",
+    [data.ownerId, data.name, id],
+  );
+  return result.rows[0];
 };
 
 export const deleteProjectModel = async (id: string): Promise<boolean> => {
-  const index = projects.findIndex((p) => p.id === id);
-  if (index === -1) return false;
-  projects.splice(index, 1);
-  return true;
+  const result = await pool.query("DELETE FROM projects WHERE id=$1", [id]);
+  return (result.rowCount ?? 0) > 0;
 };
