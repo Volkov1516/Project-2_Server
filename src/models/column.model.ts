@@ -1,32 +1,68 @@
+import pool from "../db";
+
 type Column = {
   id: string;
   componentId: string;
   name: string;
   position: number;
-}
-
-const columns: Column[] = [];
-
-export const createColumnModel = async (data: Partial<Column>): Promise<Column> => {
-  const column = { id: Date.now().toString(), componentId: data.componentId || '...', name: data.name || 'Untitled Column', position: data.position || 0 };
-  columns.push(column);
-  return column;
 };
 
-export const readColumnModel = async (id: string): Promise<Column | undefined> => {
-  return columns.find(c => c.id === id);
-}
+export const createColumnModel = async (
+  data: Partial<Column>,
+): Promise<Column> => {
+  const componentId = data.componentId || "...";
+  const name = data.name || "Untitled Column";
+  const position = data.position || 0;
 
-export const updateColumnModel = async (id: string, data: Partial<Column>): Promise<Column | undefined> => {
-  const column = columns.find(c => c.id === id);
-  if (column) {
-    if (data.name !== undefined) column.name = data.name;
-    if (data.position !== undefined) column.position = data.position;
+  const result = await pool.query(
+    `INSERT INTO columns (componentId, name, position)
+     VALUES ($1, $2, $3)
+     RETURNING *`,
+    [componentId, name, position],
+  );
+
+  return result.rows[0];
+};
+
+export const readColumnModel = async (
+  id: string,
+): Promise<Column | undefined> => {
+  const result = await pool.query(`SELECT * FROM columns WHERE id = $1`, [id]);
+  return result.rows[0] || null;
+};
+
+export const updateColumnModel = async (
+  id: string,
+  data: Partial<Column>,
+): Promise<Column | null> => {
+  const fields: string[] = [];
+  const values: any[] = [];
+
+  if (data.name !== undefined) {
+    values.push(data.name);
+    fields.push(`name = $${values.length}`);
   }
-  return column;
+  if (data.position !== undefined) {
+    values.push(data.position);
+    fields.push(`position = $${values.length}`);
+  }
+
+  if (fields.length === 0) {
+    const current = await readColumnModel(id);
+    return current ?? null; // превращаем undefined в null
+  }
+
+  values.push(id);
+  const query = `
+    UPDATE columns SET ${fields.join(", ")}
+    WHERE id = $${values.length}
+    RETURNING *
+  `;
+
+  const result = await pool.query(query, values);
+  return result.rows[0] || null;
 };
 
 export const deleteColumnModel = async (id: string): Promise<void> => {
-  const index = columns.findIndex(c => c.id === id);
-  if (index !== -1) columns.splice(index, 1);
+  await pool.query(`DELETE FROM columns WHERE id = $1`, [id]);
 };
