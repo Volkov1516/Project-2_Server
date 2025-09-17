@@ -7,6 +7,8 @@ export const telegramWebhookController = asyncHandler(
     const componentId = req.params.componentId;
     const data = req.body;
 
+    console.log(data);
+
     const card = {
       id: String(data.message.message_id),
       userId: data.message.from.id,
