@@ -43,6 +43,11 @@ export const readComponentModel = async (
   return result.rows[0];
 };
 
+export const readComponentsModel = async (): Promise<Component[]> => {
+  const result = await pool.query("SELECT * FROM components");
+  return result.rows;
+};
+
 export const updateComponentModel = async (
   id: string,
   data: Partial<Component>,

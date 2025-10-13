@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import {
   createComponentModel,
   readComponentModel,
+  readComponentsModel,
   updateComponentModel,
   deleteComponentModel,
 } from "../models/component.model";
@@ -22,6 +23,16 @@ export const readComponentController = asyncHandler(
       return res.status(404).json({ message: "Component not found" });
     }
     res.json(component);
+  },
+);
+
+export const readComponentsController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const components = await readComponentsModel();
+    if (!components) {
+      return res.status(404).json({ message: "Components not found" });
+    }
+    res.json(components);
   },
 );
 

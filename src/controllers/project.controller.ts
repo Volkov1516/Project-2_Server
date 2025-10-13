@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   createProjectModel,
+  readProjectsModel,
   readProjectModel,
   updateProjectModel,
   deleteProjectModel,
@@ -21,6 +22,16 @@ export const readProjectController = asyncHandler(
       return res.status(404).json({ message: "Project not found" });
     }
     res.json(project);
+  },
+);
+
+export const readProjectsController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const projects = await readProjectsModel();
+    if (!projects) {
+      return res.status(404).json({ message: "Projects not found" });
+    }
+    res.json(projects);
   },
 );
 

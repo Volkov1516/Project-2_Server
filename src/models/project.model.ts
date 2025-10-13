@@ -18,6 +18,11 @@ export const createProjectModel = async (
   return result.rows[0];
 };
 
+export const readProjectsModel = async (): Promise<Project[]> => {
+  const result = await pool.query("SELECT * FROM projects");
+  return result.rows;
+};
+
 export const readProjectModel = async (
   id: string,
 ): Promise<Project | undefined> => {
