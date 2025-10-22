@@ -4,6 +4,7 @@ import {
   readColumnModel,
   updateColumnModel,
   deleteColumnModel,
+  readColumnsByComponentIdModel,
 } from "../models/column.model";
 
 export const createColumnController = async (
@@ -30,6 +31,24 @@ export const readColumnController = async (
       return res.status(404).json({ message: "Card not found" });
     }
     res.json(card);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const readColumnsByComponentIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { componentId } = req.params;
+    if (!componentId) {
+      return res.status(400).json({ message: "Component ID is required" });
+    }
+
+    const columns = await readColumnsByComponentIdModel(componentId);
+    res.json(columns);
   } catch (error) {
     next(error);
   }

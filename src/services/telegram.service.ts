@@ -5,7 +5,7 @@ export const registerTelegramWebhook = (
   componentId: string,
 ) => {
   return new Promise<void>((resolve, reject) => {
-    const webhookUrl = `${process.env.NGROK_URL}/telegram/${componentId}`;
+    const webhookUrl = `https://979fb6587f51.ngrok-free.app/telegram/${componentId}`;
 
     const data = JSON.stringify({ url: webhookUrl });
 

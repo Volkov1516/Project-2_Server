@@ -15,7 +15,7 @@ export const telegramWebhookController = asyncHandler(
       userFirstName: data.message.from?.first_name || "",
       userLastName: data.message.from?.last_name || "",
       componentId,
-      orign: "telegram",
+      origin: "telegram",
       text: data.message.text,
       status: "thread",
     };

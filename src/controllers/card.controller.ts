@@ -1,9 +1,10 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import {
   createCardModel,
   readCardModel,
   updateCardModel,
   deleteCardModel,
+  readCardByComponentIdModel,
 } from "../models/card.model";
 import { asyncHandler } from "../utils/asyncHandler";
 
@@ -23,6 +24,24 @@ export const readCardController = asyncHandler(
     res.json(card);
   },
 );
+
+export const readCardByProjectIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { componentId } = req.params;
+    if (!componentId) {
+      return res.status(400).json({ message: "Card ID is required" });
+    }
+
+    const cards = await readCardByComponentIdModel(componentId);
+    res.json(cards);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateCardController = asyncHandler(
   async (req: Request, res: Response) => {

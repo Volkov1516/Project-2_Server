@@ -31,6 +31,16 @@ export const readColumnModel = async (
   return result.rows[0] || null;
 };
 
+export const readColumnsByComponentIdModel = async (
+  componentId: string,
+): Promise<Column[]> => {
+  const result = await pool.query(
+    `SELECT * FROM columns WHERE componentId = $1 ORDER BY position ASC`,
+    [componentId],
+  );
+  return result.rows as Column[];
+};
+
 export const updateColumnModel = async (
   id: string,
   data: Partial<Column>,

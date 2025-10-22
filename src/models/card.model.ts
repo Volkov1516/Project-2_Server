@@ -40,6 +40,16 @@ export const readCardModel = async (id: string): Promise<Card | undefined> => {
   return result.rows[0];
 };
 
+export const readCardByComponentIdModel = async (
+  componentId: string,
+): Promise<Card[]> => {
+  const result = await pool.query(
+    `SELECT * FROM cards WHERE componentId = $1`,
+    [componentId],
+  );
+  return result.rows as Card[];
+};
+
 export const updateCardModel = async (
   id: string,
   data: Partial<Card>,
