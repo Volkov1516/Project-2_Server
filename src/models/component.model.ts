@@ -5,6 +5,7 @@ type Component = {
   projectId: string;
   parentId?: string;
   telegramKey?: string;
+  telegramkey?: string;
   name: string;
 };
 

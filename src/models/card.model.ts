@@ -3,6 +3,7 @@ import pool from "../db";
 type Card = {
   id: string | number;
   userId?: string;
+  userid?: string;
   userFirstName?: string;
   userLastName?: string;
   componentId?: string;

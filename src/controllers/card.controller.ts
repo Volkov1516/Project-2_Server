@@ -6,6 +6,8 @@ import {
   deleteCardModel,
   readCardByComponentIdModel,
 } from "../models/card.model";
+import { readComponentModel } from "../models/component.model";
+import { sendTelegramMessage } from "../services/telegram.service";
 import { asyncHandler } from "../utils/asyncHandler";
 
 export const createCardController = asyncHandler(
@@ -60,5 +62,41 @@ export const deleteCardController = asyncHandler(
       return res.status(404).json({ message: "Card not found" });
     }
     res.status(204).send();
+  },
+);
+
+export const updateCardStatusController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { cardId, newColumnId, componentId } = req.body;
+
+    if (!cardId || !newColumnId || !componentId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const oldCard = await readCardModel(cardId);
+    if (!oldCard) {
+      return res.status(404).json({ message: "Card not found" });
+    }
+
+    const updatedCard = await updateCardModel(cardId, { status: newColumnId, componentId });
+
+    if (!updatedCard) {
+      return res.status(404).json({ message: "Card not found" });
+    }
+
+    const component = await readComponentModel(componentId);
+
+    console.log("Status updated", oldCard.status, updatedCard.status);
+    console.log(component);
+    console.log(component?.telegramkey);
+    console.log(oldCard);
+
+    if (component?.telegramkey && oldCard.userid) {
+      console.log("Sending telegram message");
+      const message = `Card "${updatedCard.text}" moved from ${oldCard.status} to ${updatedCard.status}.`;
+      await sendTelegramMessage(oldCard.userid, message, component.telegramkey);
+    }
+
+    res.json(updatedCard);
   },
 );
