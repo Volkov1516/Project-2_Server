@@ -78,7 +78,10 @@ export const updateCardStatusController = asyncHandler(
       return res.status(404).json({ message: "Card not found" });
     }
 
-    const updatedCard = await updateCardModel(cardId, { status: newColumnId, componentId });
+    const updatedCard = await updateCardModel(cardId, {
+      status: newColumnId,
+      componentId,
+    });
 
     if (!updatedCard) {
       return res.status(404).json({ message: "Card not found" });
@@ -89,7 +92,8 @@ export const updateCardStatusController = asyncHandler(
     console.log("Status updated", oldCard.status, updatedCard.status);
     console.log(component);
     console.log(component?.telegramkey);
-    console.log(oldCard);
+    console.log("OLD", oldCard);
+    console.log("NEW", updatedCard);
 
     if (component?.telegramkey && oldCard.userid) {
       console.log("Sending telegram message");

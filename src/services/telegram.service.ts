@@ -5,7 +5,7 @@ export const registerTelegramWebhook = (
   componentId: string,
 ) => {
   return new Promise<void>((resolve, reject) => {
-    const webhookUrl = `https://9a567ace9888.ngrok-free.app/telegram/${componentId}`;
+    const webhookUrl = `https://197692edf956.ngrok-free.app/telegram/${componentId}`;
 
     const data = JSON.stringify({ url: webhookUrl });
 
@@ -50,7 +50,11 @@ export const registerTelegramWebhook = (
   });
 };
 
-export const sendTelegramMessage = async (chatId: string, text: string, telegramToken: string) => {
+export const sendTelegramMessage = async (
+  chatId: string,
+  text: string,
+  telegramToken: string,
+) => {
   const data = JSON.stringify({
     chat_id: chatId,
     text: text,
@@ -77,7 +81,11 @@ export const sendTelegramMessage = async (chatId: string, text: string, telegram
           if (result.ok) {
             resolve(result);
           } else {
-            reject(new Error(`Failed to send Telegram message: ${result.description}`));
+            reject(
+              new Error(
+                `Failed to send Telegram message: ${result.description}`,
+              ),
+            );
           }
         } catch (err) {
           reject(err);

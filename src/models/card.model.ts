@@ -10,6 +10,7 @@ type Card = {
   origin?: string;
   text?: string;
   status: string;
+  position?: number;
 };
 
 export const createCardModel = async (data: Partial<Card>): Promise<Card> => {
