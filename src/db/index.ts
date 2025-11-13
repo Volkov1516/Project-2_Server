@@ -1,13 +1,25 @@
+import "dotenv/config";
 import pkg from "pg";
+
 const { Pool } = pkg;
 
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  // database: process.env.DB_NAME,
-  database: "project2",
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT),
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
+
+async function testConnection() {
+  try {
+    const client = await pool.connect();
+    await client.query("SELECT NOW()");
+    console.log("Render Postgres connection successful!");
+    client.release();
+  } catch (err) {
+    console.error("Render Postgres connection failed:", err);
+    process.exit(1);
+  }
+}
+
+testConnection();
 
 export default pool;
