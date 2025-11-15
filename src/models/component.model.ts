@@ -59,9 +59,9 @@ export const updateComponentModel = async (
     `
     UPDATE components
     SET
-      parent_id = COALESCE($1, parentId),
+      parent_id = COALESCE($1, parent_id),
       name = COALESCE($2, name),
-      telegram_key = COALESCE($3, telegramKey)
+      telegram_key = COALESCE($3, telegram_key)
     WHERE id = $4
     RETURNING *
     `,
