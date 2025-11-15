@@ -25,7 +25,7 @@ export const readProjectsModel = async (
   const params: string[] = [];
 
   if (ownerId) {
-    query += " WHERE ownerId = $1";
+    query += " WHERE owner_id = $1";
     params.push(ownerId);
   }
 

@@ -4,9 +4,9 @@ type Component = {
   id: string;
   projectId: string;
   parentId?: string;
+  name: string;
   telegramKey?: string;
   telegramkey?: string;
-  name: string;
 };
 
 export const createComponentModel = async (
