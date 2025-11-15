@@ -27,7 +27,8 @@ export const readProjectController = asyncHandler(
 
 export const readProjectsController = asyncHandler(
   async (req: Request, res: Response) => {
-    const projects = await readProjectsModel();
+    const { ownerId } = req.query;
+    const projects = await readProjectsModel(ownerId as string | undefined);
     if (!projects) {
       return res.status(404).json({ message: "Projects not found" });
     }

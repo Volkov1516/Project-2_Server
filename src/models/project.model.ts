@@ -2,7 +2,7 @@ import pool from "../db";
 
 type Project = {
   id: string;
-  ownerId: string; // String to match user ID type from Firebase Auth
+  ownerId: string;
   name: string;
 };
 
@@ -18,8 +18,19 @@ export const createProjectModel = async (
   return result.rows[0];
 };
 
-export const readProjectsModel = async (): Promise<Project[]> => {
-  const result = await pool.query("SELECT * FROM projects");
+export const readProjectsModel = async (
+  ownerId?: string,
+): Promise<Project[]> => {
+  let query = "SELECT * FROM projects";
+  const params: string[] = [];
+
+  if (ownerId) {
+    query += " WHERE ownerId = $1";
+    params.push(ownerId);
+  }
+
+  const result = await pool.query(query, params);
+
   return result.rows;
 };
 
