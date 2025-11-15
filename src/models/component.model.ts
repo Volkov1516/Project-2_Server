@@ -25,7 +25,7 @@ export const createComponentModel = async (
 
   const result = await pool.query(
     `
-    INSERT INTO components (projectId, parentId, name, telegramKey)
+    INSERT INTO components (project_id, parent_id, name, telegram_key)
     VALUES ($1, $2, $3, $4)
     RETURNING *
     `,
@@ -59,9 +59,9 @@ export const updateComponentModel = async (
     `
     UPDATE components
     SET
-      parentId = COALESCE($1, parentId),
+      parent_id = COALESCE($1, parentId),
       name = COALESCE($2, name),
-      telegramKey = COALESCE($3, telegramKey)
+      telegram_key = COALESCE($3, telegramKey)
     WHERE id = $4
     RETURNING *
     `,
