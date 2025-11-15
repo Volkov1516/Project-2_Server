@@ -15,7 +15,7 @@ export const createColumnModel = async (
   const position = data.position || 0;
 
   const result = await pool.query(
-    `INSERT INTO columns (componentId, name, position)
+    `INSERT INTO columns (component_id, name, position)
      VALUES ($1, $2, $3)
      RETURNING *`,
     [componentId, name, position],
@@ -35,7 +35,7 @@ export const readColumnsByComponentIdModel = async (
   componentId: string,
 ): Promise<Column[]> => {
   const result = await pool.query(
-    `SELECT * FROM columns WHERE componentId = $1 ORDER BY position ASC`,
+    `SELECT * FROM columns WHERE component_id = $1 ORDER BY position ASC`,
     [componentId],
   );
   return result.rows as Column[];
@@ -59,7 +59,7 @@ export const updateColumnModel = async (
 
   if (fields.length === 0) {
     const current = await readColumnModel(id);
-    return current ?? null; // превращаем undefined в null
+    return current ?? null;
   }
 
   values.push(id);
