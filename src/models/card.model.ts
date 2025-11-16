@@ -2,7 +2,7 @@ import pool from "../db";
 
 type Card = {
   id: string;
-  componentId: number;
+  componentId: number | string;
   columnId?: number | string;
   telegramUserId?: string;
   telegramUserName?: string;

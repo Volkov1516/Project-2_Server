@@ -3,7 +3,7 @@ import { io } from "../index";
 
 export const createCardService = async (data: {
   id: string;
-  componentId: number;
+  componentId: number | string;
   columnId?: number | string;
   telegramUserId?: string;
   telegramUserName?: string;
