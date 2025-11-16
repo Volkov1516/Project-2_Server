@@ -12,7 +12,7 @@ export const telegramWebhookController = asyncHandler(
     const card = {
       id: String(data.message.message_id),
       componentId,
-      columnId: "thread",
+      // columnId: "thread",
       telegramUserId: data.message.from.id,
       telegramUserName: data.message.from?.first_name || "",
       origin: "telegram",
