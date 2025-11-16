@@ -49,7 +49,7 @@ export const readCardByComponentIdModel = async (
 };
 
 export const updateCardModel = async (
-  id: number,
+  id: number | string,
   data: Partial<Card>,
 ): Promise<Card | undefined> => {
   const {
@@ -88,7 +88,9 @@ export const updateCardModel = async (
   return result.rows[0];
 };
 
-export const deleteCardModel = async (id: number): Promise<boolean> => {
+export const deleteCardModel = async (
+  id: number | string,
+): Promise<boolean> => {
   const result = await pool.query(`DELETE FROM cards WHERE id = $1`, [id]);
   return (result.rowCount ?? 0) > 0;
 };

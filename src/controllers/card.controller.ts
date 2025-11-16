@@ -79,7 +79,7 @@ export const updateCardStatusController = asyncHandler(
     }
 
     const updatedCard = await updateCardModel(cardId, {
-      status: newColumnId,
+      columnId: newColumnId,
       componentId,
     });
 
@@ -89,16 +89,14 @@ export const updateCardStatusController = asyncHandler(
 
     const component = await readComponentModel(componentId);
 
-    console.log("Status updated", oldCard.status, updatedCard.status);
-    console.log(component);
-    console.log(component?.telegramkey);
-    console.log("OLD", oldCard);
-    console.log("NEW", updatedCard);
-
-    if (component?.telegramkey && oldCard.userid) {
+    if (component?.telegramKey && oldCard.telegramUserId) {
       console.log("Sending telegram message");
-      const message = `Card "${updatedCard.text}" moved from ${oldCard.status} to ${updatedCard.status}.`;
-      await sendTelegramMessage(oldCard.userid, message, component.telegramkey);
+      // const message = `Card "${updatedCard.text}" moved from ${oldCard.column_id} to ${updatedCard.column_id}.`;
+      await sendTelegramMessage(
+        oldCard.telegramUserId,
+        "Update Message",
+        component.telegramKey,
+      );
     }
 
     res.json(updatedCard);

@@ -6,7 +6,6 @@ type Component = {
   parentId?: string;
   name: string;
   telegramKey?: string;
-  telegramkey?: string;
 };
 
 export const createComponentModel = async (
