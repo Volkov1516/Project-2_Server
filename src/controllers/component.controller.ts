@@ -43,6 +43,8 @@ export const updateComponentController = asyncHandler(
 
     const existingComponent = await readComponentModel(req.params.id);
 
+    console.log(existingComponent);
+
     if (!existingComponent) {
       return res.status(404).json({ message: "Component not found" });
     }
