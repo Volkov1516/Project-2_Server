@@ -46,7 +46,7 @@ export const readCardByComponentIdModel = async (
   componentId: string,
 ): Promise<Card[]> => {
   const result = await pool.query(
-    `SELECT * FROM cards WHERE componentId = $1`,
+    `SELECT * FROM cards WHERE component_id = $1`,
     [componentId],
   );
   return result.rows as Card[];
