@@ -96,13 +96,16 @@ export const updateCardStatusController = asyncHandler(
 
     console.log("component: ", component);
 
-    if (component?.telegramKey && oldCard.telegramUserId) {
+    //@ts-ignore
+    if (component?.telegram_key && oldCard.telegram_user_id) {
       console.log("Sending telegram message");
       // const message = `Card "${updatedCard.text}" moved from ${oldCard.column_id} to ${updatedCard.column_id}.`;
       await sendTelegramMessage(
-        oldCard.telegramUserId,
+        //@ts-ignore
+        oldCard.telegram_user_id,
         "Update Message",
-        component.telegramKey,
+        //@ts-ignore
+        component.telegram_key,
       );
     }
 
