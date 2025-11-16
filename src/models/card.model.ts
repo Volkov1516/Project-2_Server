@@ -1,37 +1,33 @@
 import pool from "../db";
 
 type Card = {
-  id: string | number;
-  userId?: string;
-  userid?: string;
-  userFirstName?: string;
-  userLastName?: string;
-  componentId?: string;
+  id: string;
+  componentId: number;
+  columnId?: number | string;
+  telegramUserId?: string;
+  telegramUserName?: string;
   origin?: string;
   text?: string;
-  status: string;
-  position?: number;
 };
 
 export const createCardModel = async (data: Partial<Card>): Promise<Card> => {
   const {
-    userId = null,
-    userFirstName = null,
-    userLastName = null,
     componentId = null,
+    columnId = "thread",
+    telegramUserId = null,
+    telegramUserName = null,
     origin = "telegram",
     text = null,
-    status = "thread",
   } = data;
 
   const result = await pool.query(
     `
     INSERT INTO cards
-      (userId, userFirstName, userLastName, componentId, origin, text, status)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+      (component_id, column_id, telegram_user_id, telegram_user_name, origin, text, )
+    VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *
     `,
-    [userId, userFirstName, userLastName, componentId, origin, text, status],
+    [componentId, columnId, telegramUserId, telegramUserName, origin, text],
   );
 
   return result.rows[0];
@@ -53,49 +49,46 @@ export const readCardByComponentIdModel = async (
 };
 
 export const updateCardModel = async (
-  id: string,
+  id: number,
   data: Partial<Card>,
 ): Promise<Card | undefined> => {
   const {
-    userId,
-    userFirstName,
-    userLastName,
     componentId,
+    columnId,
+    telegramUserId,
+    telegramUserName,
     origin,
     text,
-    status,
   } = data;
 
   const result = await pool.query(
     `
     UPDATE cards
     SET
-      userId = COALESCE($1, userId),
-      userFirstName = COALESCE($2, userFirstName),
-      userLastName = COALESCE($3, userLastName),
-      componentId = COALESCE($4, componentId),
-      origin = COALESCE($5, origin),
-      text = COALESCE($6, text),
-      status = COALESCE($7, status)
-    WHERE id = $8
+      component_id = COALESCE($2, component_id),
+      column_id = COALESCE($3, column_id),
+      telegram_user_id = COALESCE($4, telegram_user_id),
+      telegram_user_name = COALESCE($5, telegram_user_name),
+      origin = COALESCE($6, origin),
+      text = COALESCE($7, text),
+    WHERE id = $1
     RETURNING *
     `,
     [
-      userId ?? null,
-      userFirstName ?? null,
-      userLastName ?? null,
+      id,
       componentId ?? null,
+      columnId ?? null,
+      telegramUserId ?? null,
+      telegramUserName ?? null,
       origin ?? null,
       text ?? null,
-      status ?? null,
-      id,
     ],
   );
 
   return result.rows[0];
 };
 
-export const deleteCardModel = async (id: string): Promise<boolean> => {
+export const deleteCardModel = async (id: number): Promise<boolean> => {
   const result = await pool.query(`DELETE FROM cards WHERE id = $1`, [id]);
   return (result.rowCount ?? 0) > 0;
 };

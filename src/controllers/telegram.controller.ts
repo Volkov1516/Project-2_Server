@@ -11,13 +11,12 @@ export const telegramWebhookController = asyncHandler(
 
     const card = {
       id: String(data.message.message_id),
-      userId: data.message.from.id,
-      userFirstName: data.message.from?.first_name || "",
-      userLastName: data.message.from?.last_name || "",
       componentId,
+      columnId: "thread",
+      telegramUserId: data.message.from.id,
+      telegramUserName: data.message.from?.first_name || "",
       origin: "telegram",
       text: data.message.text,
-      status: "thread",
     };
 
     const updatedCard = createCardService(card);
