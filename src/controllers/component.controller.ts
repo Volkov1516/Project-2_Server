@@ -38,6 +38,9 @@ export const readComponentsController = asyncHandler(
 
 export const updateComponentController = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log(req.params.id);
+    console.log(req.body.telegramKey);
+
     const existingComponent = await readComponentModel(req.params.id);
 
     if (!existingComponent) {
