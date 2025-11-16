@@ -23,7 +23,7 @@ export const createCardModel = async (data: Partial<Card>): Promise<Card> => {
   const result = await pool.query(
     `
     INSERT INTO cards
-      (component_id, column_id, telegram_user_id, telegram_user_name, origin, text, )
+      (component_id, column_id, telegram_user_id, telegram_user_name, origin, text)
     VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *
     `,
@@ -70,7 +70,7 @@ export const updateCardModel = async (
       telegram_user_id = COALESCE($4, telegram_user_id),
       telegram_user_name = COALESCE($5, telegram_user_name),
       origin = COALESCE($6, origin),
-      text = COALESCE($7, text),
+      text = COALESCE($7, text)
     WHERE id = $1
     RETURNING *
     `,
