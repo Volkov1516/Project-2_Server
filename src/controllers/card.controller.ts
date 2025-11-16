@@ -68,7 +68,7 @@ export const deleteCardController = asyncHandler(
 export const updateCardStatusController = asyncHandler(
   async (req: Request, res: Response) => {
     const { cardId, newColumnId, componentId } = req.body;
-    console.log(req.body);
+    console.log("req.body: ", req.body);
 
     if (!cardId || !newColumnId || !componentId) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -79,6 +79,8 @@ export const updateCardStatusController = asyncHandler(
       return res.status(404).json({ message: "Card not found" });
     }
 
+    console.log("oldCard: ", oldCard);
+
     const updatedCard = await updateCardModel(cardId, {
       columnId: newColumnId,
       componentId,
@@ -88,7 +90,11 @@ export const updateCardStatusController = asyncHandler(
       return res.status(404).json({ message: "Card not found" });
     }
 
+    console.log("updatedCard: ", updatedCard);
+
     const component = await readComponentModel(componentId);
+
+    console.log("component: ", component);
 
     if (component?.telegramKey && oldCard.telegramUserId) {
       console.log("Sending telegram message");
