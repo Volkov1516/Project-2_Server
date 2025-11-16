@@ -71,6 +71,8 @@ export const sendTelegramMessage = async (
     },
   };
 
+  console.log("SEND TG BACK");
+
   return new Promise((resolve, reject) => {
     const req = https.request(options, (res) => {
       let body = "";

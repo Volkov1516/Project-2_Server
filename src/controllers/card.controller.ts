@@ -68,6 +68,7 @@ export const deleteCardController = asyncHandler(
 export const updateCardStatusController = asyncHandler(
   async (req: Request, res: Response) => {
     const { cardId, newColumnId, componentId } = req.body;
+    console.log(req.body);
 
     if (!cardId || !newColumnId || !componentId) {
       return res.status(400).json({ message: "Missing required fields" });
