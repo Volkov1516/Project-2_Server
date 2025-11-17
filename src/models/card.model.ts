@@ -13,7 +13,7 @@ type Card = {
 export const createCardModel = async (data: Partial<Card>): Promise<Card> => {
   const {
     componentId = null,
-    columnId = null,
+    columnId = 0,
     telegramUserId = null,
     telegramUserName = null,
     origin = "telegram",
