@@ -2,8 +2,7 @@
 
 [Web Page](https://project-2-bf0db.web.app/)
 
-![Main screen](./assets/screenshots/analytics.jpeg)
-![Main screen](./assets/screenshots/board.jpeg)
+![Demo](./assets/demo.gif)
 
 ## Description
 A project management application designed to provide project owners with clear analytics, managers with convenient task management, and team members with an easy way to submit requests through their favorite messenger.
